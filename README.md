@@ -9,9 +9,9 @@ my assignment program, to implement a online mysql execution website
 	num install cors
 
 
-2.introduce:
+# 2.introduce:
 It's a project with server and web
-server has three files:app.js, mysql.js, router.js
+server has three files: app.js, mysql.js, router.js
 	1.app.js is the start of server,when run it, server will start.the server address is http://127.0.0.1:8085/
 	2.mysql.js has the connect information of mysql, and it encapsulate the function to excute SQL 
 	3.router.js encapsulate the interface for web:/searchPopulation
