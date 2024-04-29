@@ -1,10 +1,10 @@
 # online-mysql
 my assignment program, to implement a online mysql execution website
 1.Install plugin
-npm install mysql 
-num install express --save -g
-num install body-parser
-num install cors
+        npm install mysql 
+        num install express --save -g
+        num install body-parser
+        num install cors
 
 
 2.introduce:
