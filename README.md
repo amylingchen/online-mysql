@@ -23,9 +23,11 @@ web has one file:searchSql.html
 	when we click it, it will show the SQL query on the input window .
 	when we click the run button, it will excute the sql and show its result on right
 
+# 3.outlook
+![image](https://github.com/amylingchen/online-mysql/assets/38561335/bae3f28a-38dd-4dcc-bef3-76a877eaf2a4)
 
 	
-# 3.reference:
+# 4.reference:
  js connect sql: https://blog.csdn.net/weixin_46441425/article/details/123265906
 	
 	
