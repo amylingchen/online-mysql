@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search-population</title>
+<!--    <script src="../js/axios.js"></script>-->
+<!--    <script src="../js/jquery.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+</head>
+<style>
+    .container {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        font-family: Arial;
+    }
+
+    .left-pane, .right-pane {
+        flex: 1;
+        padding: 20px;
+    }
+    .custom-textarea {
+        width: 500px;
+        height: 400px;
+
+    }
+    .container1 {
+        position:relative;
+        display:flex;
+        flex-direction:column;
+        box-sizing: border-box;
+        width: 100%;
+        margin-block: 0;
+        margin-inline: 0;
+        padding-block: 0;
+        padding-inline: 0;
+        background-color:#ffffff;
+        border-radius:6px;
+        margin: 0;
+        padding: 24px;
+    }
+    .custom-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #75b2f6;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+
+    }
+    .custom-textarea {
+        width: 500px;
+        height: 300px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: #333;
+        resize: vertical;
+    }
+    .table-list{
+        width: 100%;
+        text-align:left;
+        border-bottom:1px solid #f0f0f0;
+
+    }
+    .table-list  th {
+        padding: 10px 20px;
+        width: 100px;
+        height: 30px;
+        font-size:1.2em;
+        background-color: #fafafa;
+        color:#000000;
+        border-radius:6px
+    }
+    .table-list  td {
+        padding: 10px 20px;
+        width: 100px;
+        height: 30px;
+        color:#000000;
+
+    }
+    .error{
+        padding: 10px 20px;
+        color: brown;
+        font-size: 18px;
+    }
+    .searchtype{
+        padding: 20px 0px;
+        font-size: 16px;
+    }
+
+    .custom-type{
+        padding: 10px 20px;
+        font-size: 16px;
+        border-color: #ccdef1;
+        border-radius: 5px;
+        background: #ffffff;
+
+
+    }
+
+
+</style>
+<body>
+<div class="container">
+    <div class="left-pane">
+
+        <div class="container1" >
+            <div >quick query :</div>
+            <div class="searchtype">
+                <button class="custom-type"  onclick="quickSQL(listcitysql)" type="button" >hello</button>
+                <button class="custom-type"  onclick="quickSQL(liststatesql)" type="button">list states</button>
+                <button class="custom-type"  onclick="quickSQL(countsql)" type="button">count query</button>
+                <button class="custom-type"  onclick="quickSQL(removesql)" type="button">remove query</button>
+
+            </div>
+            <div >Input your SQL:(table-citypopulation)</div>
+            <div style="padding: 10px 0px">
+                <textarea class="custom-textarea" id="codeData" placeholder="Enter code"></textarea>
+            </div>
+            <div>
+                <button class="custom-button"  onclick="searchSQL()" type="button">Run</button>
+            </div>
+        </div>
+    </div>
+    <div class="right-pane">
+        <div class="container1" >here is your result:
+            <table class="table-list" >
+                <thead id="table-header">
+                </thead>
+                <tbody id="table-body">
+
+                </tbody>
+            </table>
+            <div class="error" id="error"></div>
+        </div>
+
+    </div>
+</div>
+<script>
+    var listcitysql="SELECT place,sum(population)  as p \n FROM citypopulation \n WHERE state='(a)' and fips between (a) and (b) and population between (1) and (2) GROUP by place \n  HAVING p > 195045;";
+    var liststatesql="SELECT state,sum(population) as p \n FROM citypopulation \n WHERE population between (1) and (2) GROUP by state \n HAVING p > 195045;";
+    var countsql="SELECT count(*) \n FROM \n(SELECT place,sum(population) as p\n FROM citypopulation \n WHERE state='(a)' and fips between (a) and (b) and population between (1) and (2) GROUP by place \n HAVING p > 195045)as subtable;";
+    var removesql="DELETE FROM citypopulation \n WHERE state='(a)' and place='(b)' and fips between (a) and (b) population between (1) and (2) GROUP by state;";
+    var codeData=document.getElementById('codeData');
+    codeData.addEventListener('input',function (event){
+        var inputvalue =event.target.value;
+        codeData.value=inputvalue;
+    })
+    //excute query and show result
+    function searchSQL(){
+        var sql=document.getElementById('codeData').value;
+        var type = sql.split(' ')[0];
+        const param={
+            sqlcode:sql,
+        };
+        console.log(param);
+
+        $.ajax({
+            url: 'http://127.0.0.1:8085/api/searchPopulation',
+            method: 'POST',
+            dataType: 'json',
+            data: JSON.stringify(param),
+            contentType: 'application/json',
+            success: function (data) {
+                if(data.code===200 && type.toLowerCase().indexOf('select')!==-1){
+                    //select querry success:show data
+                    console.log(data);
+                    showresult(data);
+                }else if(data.code===200)
+                {   //remove success:show remove rows
+                    console.log(data);
+                    showremove(data);
+                } else {
+                    showerror(data.data);
+                    console.error('Error：', data.data);
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // error: show error message
+                console.error('Error：', error);
+            }
+        });
+    }
+    function showresult(data) {
+        const errordiv=document.getElementById('error');
+        errordiv.textContent='';
+        const tableHeader = document.getElementById('table-header');
+        tableHeader.innerHTML = '';
+        const headerRow = document.createElement('tr');
+        data=data.data;
+        for (const key in data[0]) {
+            const th = document.createElement('th');
+            th.textContent = key;
+            headerRow.appendChild(th);
+        }
+        tableHeader.appendChild(headerRow);
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+        data.forEach(data => {
+            const row = document.createElement('tr');
+            for (const key in data) {
+                const td = document.createElement('td');
+                td.textContent = data[key];
+                row.appendChild(td);
+            }
+            tbody.appendChild(row);
+        });
+    }
+    function showerror(error){
+        const tableHeader = document.getElementById('table-header');
+        tableHeader.innerHTML = '';
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+        const errordiv=document.getElementById('error');
+        errordiv.textContent=error.sqlMessage;
+    }
+    function showremove(error){
+        error=error.data;
+        const tableHeader = document.getElementById('table-header');
+        tableHeader.innerHTML = '';
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+        const errordiv=document.getElementById('error');
+        errordiv.textContent='';
+        const headerRow = document.createElement('tr');
+        const th = document.createElement('th');
+        th.textContent='affectRows';
+        headerRow.append(th);
+        tableHeader.append(headerRow);
+        const row = document.createElement('tr');
+        const td = document.createElement('td');
+        td.textContent = error.affectedRows;
+        row.appendChild(td);
+        tbody.append(row);
+
+    }
+
+    //quick show query
+    function quickSQL(value){
+        codeData.value=value;
+        codeData.textContent=value;
+    }
+</script>
+</body>
+</html>

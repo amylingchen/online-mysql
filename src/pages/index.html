@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>City population</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/axios.js"></script>
+    <script src="../js/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+<div class="appContainer">
+    <div class="header">
+        <header>
+            <h1>City Population</h1>
+        </header>
+    </div>
+    <div class="container">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="#">菜单项 1</a></li>
+                    <li><a href="#">菜单项 2</a></li>
+                    <li><a href="#">菜单项 3</a></li>
+                    <li><a href="#">菜单项 4</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <section class="content">
+
+            <div style="padding-left: 16px;font-size: 20px">
+                <h2 >all data</h2>
+            </div>
+            <div class="outer-margin">
+                <div class="outer">
+                    <form  id="contain" class="search">
+                        <label for="state"> state : </label>
+                        <select id="state" name="state" >
+                            <option disabled value=""></option>
+                            <!--                        <option value="TX">CN</option>-->
+                            <!--                        <option value="usa">USA</option>-->
+                            <!--                        <option value="uk">UK</option>-->
+                        </select>
+
+                        <label for="city" > city : </label>
+                        <input id ="city">
+                        <label> population :</label>
+                        <input id ="leastp" placeholder="1">
+                        <span > -- </span>
+                        <input id ="mostp" placeholder="100000000">
+                        <button  onclick="findalldate()">search</button>
+                    </form>
+                </div>
+            </div>
+            <div class="outer-margin">
+                <div  id="all-data" class="outer">
+                    <div style="font-size:1.2em;">Find Result (
+                        <span style="font-weight:bold;font-size: 20px;color: #111111"></span>
+                        )</div>
+                    <table id="table-list"  class="table-list">
+                        <thead>
+                        <tr>
+                            <th>state</th>
+                            <th>city</th>
+                            <th>fips</th>
+                            <th>tract</th>
+                            <th>population</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table-body" >
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="../js/getdata.js">
+    var state=$('#state');
+    state.addEventListener('select',function (event){
+        var selectvalue =event.target.value;
+        state.value=selectvalue;
+    });
+    var city=$('#city');
+    city.addEventListener('input',function (event){
+        var inputvalue =event.target.value;
+        city.value=inputvalue;
+    })
+</script>
+
+</body>
+
+</html>
